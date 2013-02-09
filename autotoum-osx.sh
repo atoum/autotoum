@@ -4,7 +4,6 @@ PIPE=/tmp/autotoum_$$
 ATOUM=bin/atoum
 SOURCES="$(pwd)/src $(pwd)/tests/units"
 TESTS="--test-all"
-QUIET=false
 
 check() {
 	if [ ! $(which kicker) ]
@@ -15,7 +14,7 @@ check() {
 }
 
 usage() {
-	echo -ne " Usage : $0 [-b path/to/atoum] [-w path/to/sources] [-t path/to/tests/units]"
+	echo -ne " Usage : $(basename $0) [-b path/to/atoum] [-w path/to/sources] [-t path/to/tests/units]"
 	echo
 	echo -e "     Path to atoum : path to atoum executable (defaults to $ATOUM)"
 	echo -e "     Path to sources : the watched files and/or directories (defaults to $SOURCES)"
@@ -64,6 +63,8 @@ do
     esac
 done
 
+ARGS=$(eval "echo \$${OPTIND}")
+
 check
 
 [ ! -x $ATOUM ] && echo "Cannot run $ATOUM" && exit 1
@@ -86,4 +87,4 @@ do
 			LOOP=true
 		fi
 	fi
-done | $ATOUM $TESTS --loop
+done | $ATOUM $TESTS $ARGS --loop
