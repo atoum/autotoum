@@ -40,7 +40,7 @@ do
             ATOUM=$OPTARG
             ;;
         w)
-            [ ! -z "$2" ] && SOURCES=$(echo $2 | sed "s/,/ /g")
+            SOURCES=$(echo $OPTARG | sed "s/,/ /g")
             ;;
         d)
             TESTS="-d $OPTARG"

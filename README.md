@@ -30,7 +30,7 @@ $ sudo chmo +x /usr/local/bin/autotoum
 
 ```sh
 $ cd /path/to/project
-$ autotoum bin/atoum tests/units,src
+$ autotoum -b bin/atoum -w tests/units,src -t tests/units
 
 # Use CTRL+C to exit loop
 ```
@@ -59,7 +59,7 @@ Now you only have to start autotoum in a detached process:
 
 ```sh
 $ cd /path/to/project
-$ autotoum bin/atoum tests/units,src > /dev/null 2>&1 &
+$ autotoum -b bin/atoum -w tests/units,src -d tests/units > /dev/null 2>&1 &
 
 # Kill the loop
 $ fg
