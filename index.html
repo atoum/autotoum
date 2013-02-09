@@ -28,32 +28,68 @@
     <div id="content-wrapper">
       <div class="inner clearfix">
         <section id="main-content">
-          <h3>Welcome to GitHub Pages.</h3>
+          <p><img src="http://downloads.atoum.org/images/logo.png" alt="Alt text"></p>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<h1>autotoum</h1>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+<p><strong>Feedbacks are appreciated :)</strong></p>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<p><strong>Check out the <a href="http://youtu.be/Rwp91TwkmsE">screencast of autotoum</a></strong></p>
 
-<h3>Designer Templates</h3>
+<h2>Install on Ubuntu</h2>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<div class="highlight"><pre><span class="nv">$ </span>sudo apt-get install inotify-tools
+<span class="nv">$ </span>sudo wget -O /usr/local/bin/autotoum https://gist.github.com/jubianchi/4731236/raw/autotoum.sh
+<span class="nv">$ </span>sudo chmo +x /usr/local/bin/autotoum
+</pre></div>
 
-<h3>Rather Drive Stick?</h3>
+<h2>Install on OSX</h2>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<div class="highlight"><pre><span class="nv">$ </span>sudo gem install kicker
+<span class="nv">$ </span>sudo wget -O /usr/local/bin/autotoum https://gist.github.com/jubianchi/4731236/raw/autotoum-osx.sh
+<span class="nv">$ </span>sudo chmo +x /usr/local/bin/autotoum
+</pre></div>
 
-<h3>Authors and Contributors</h3>
+<p><strong>Note: The OSX version should work on any platform supporting ruby.</strong></p>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<h2>How to use</h2>
 
-<h3>Support or Contact</h3>
+<p><strong>To make <code>autotoum</code> work properly, you will have to configure atoum so that it can be used with <a href="http://docs.atoum.org/fr/chapter3.html#test-all"><code>--test-all</code>option</a></strong></p>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd</span> /path/to/project
+<span class="nv">$ </span>autotoum bin/atoum tests/units,src
+
+<span class="c"># Use CTRL+C to exit loop</span>
+</pre></div>
+
+<h3>Using notifications (experimental)</h3>
+
+<p>I wrote a simple notification system which you can find in <a href="https://github.com/jubianchi/atoum/tree/notifiers">my fork of atoum (branch notifiers)</a>:</p>
+
+<div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">php</span>
+<span class="c1">//.atoum.php</span>
+
+<span class="k">use</span> <span class="nx">\mageekguy\atoum</span><span class="p">;</span>
+
+<span class="nv">$script</span><span class="o">-&gt;</span><span class="na">addDefaultReport</span><span class="p">()</span>
+    <span class="c1">// Growl notifier : uses growlnotify command</span>
+    <span class="o">-&gt;</span><span class="na">addField</span><span class="p">(</span><span class="k">new</span> <span class="nx">atoum\report\fields\runner\result\notifier\growl</span><span class="p">())</span>
+    <span class="c1">// OS X Notification Center notifier : uses terminal-notifier gem</span>
+    <span class="o">-&gt;</span><span class="na">addField</span><span class="p">(</span><span class="k">new</span> <span class="nx">atoum\report\fields\runner\result\notifier\terminal</span><span class="p">())</span>
+    <span class="c1">// libnotify notifier : uses notify-send from libnotify</span>
+    <span class="o">-&gt;</span><span class="na">addField</span><span class="p">(</span><span class="k">new</span> <span class="nx">atoum\report\fields\runner\result\notifier\libnotify</span><span class="p">())</span>
+<span class="p">;</span>
+</pre></div>
+
+<p>Now you only have to start autotoum in a detached process:</p>
+
+<div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd</span> /path/to/project
+<span class="nv">$ </span>autotoum bin/atoum tests/units,src &gt; /dev/null 2&gt;&amp;1 &amp;
+
+<span class="c"># Kill the loop</span>
+<span class="nv">$ </span><span class="nb">fg</span>
+<span class="nv">$ </span>^C
+</pre></div>
         </section>
 
         <aside id="sidebar">
