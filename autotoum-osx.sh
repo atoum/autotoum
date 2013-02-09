@@ -41,6 +41,14 @@ do
             ;;
         w)
             SOURCES=$(echo $OPTARG | sed "s/,/ /g")
+            for entry in $SOURCES
+            do
+                if [ ! -d $entry ] && [ ! -f $entry ]
+                then
+                    echo "Directory/File $entry does not exist"
+                    exit 1
+                fi
+            done
             ;;
         d)
             TESTS="-d $OPTARG"
