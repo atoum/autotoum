@@ -64,7 +64,7 @@ check
 
 kicktrap() { kill %%; }
 trap kicktrap INT
-kicker -s -e "echo > $PIPE" $SOURCES > /dev/null 2>&1 &
+kicker -l 0 -s -e "echo > $PIPE" $SOURCES > /dev/null 2>&1 &
 
 while true 
 do 
