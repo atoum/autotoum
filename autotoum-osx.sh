@@ -3,35 +3,62 @@
 PIPE=/tmp/autotoum_$$
 ATOUM=bin/atoum
 SOURCES="$(pwd)/src $(pwd)/tests/units"
+TESTS="--test-all"
 QUIET=false
 
-if [ "-h" = "$1" ]
-then	
-	echo -e " Usage : $0 [-q] [\e[0;32m<path/to/atoum>\e[0m] [\e[0;32m<path/to/tests>\e[0m]"
+check() {
+	if [ ! $(which kicker) ]
+	then
+		echo -e " kicker is not available. Consider installing kicker's gem"
+		exit 1
+	fi
+}
+
+usage() {
+	echo -ne " Usage : $0 [-b path/to/atoum] [-w path/to/sources] [-t path/to/tests/units]"
 	echo
-	echo -e "     Path to atoum : defaults to \e[0;32m$ATOUM\e[0m"
-	echo -e "     Path to sources : defaults to \e[0;32m$SOURCES\e[0m"
+	echo -e "     Path to atoum : path to atoum executable (defaults to $ATOUM)"
+	echo -e "     Path to sources : the watched files and/or directories (defaults to $SOURCES)"
+	echo -e "     Path to tests : path to test suite (defaults to $TESTS)"
 	echo
-	echo -e "     You can specify several files/directories to watch using a \e[0;comma (,) separated list\e[0m :"
-	echo -e "         $ autotoum bin/atoum src,tests/units/subset,tests/units/otherSubset"
+	echo -e "     You can specify several files/directories to watch using a comma (,) separated list :"
+	echo -e "         $ autotoum -w src,tests/units/subset,tests/units/otherSubset -t tests/units"
 	echo
 	echo -e "     Use CTRL+C to quit"
-fi
- 
-if [ ! $(which kicker) ]
-then
-	echo -e " \e[0,31mkicker is not available. Consider installing kicker's gem\e[0m"
-	exit 1
-fi
 
-[ "-h" = "$1" ] && exit 0
+	check
+}
  
-if [ ! -z "$1" ]
-then
-	ATOUM=$1
-fi
+while getopts “hb:w:d:” OPTION
+do
+    case $OPTION in
+        h)
+            usage
+            exit 0
+            ;;
+        b)
+            ATOUM=$OPTARG
+            ;;
+        w)
+            [ ! -z "$2" ] && SOURCES=$(echo $2 | sed "s/,/ /g")
+            ;;
+        d)
+            TESTS="-d $OPTARG"
+            ;;
+        ?)
+            usage
+            exit 1
+            ;;
+        *)
+            usage
+            exit 1
+            ;;
+    esac
+done
 
-[ ! -z "$2" ] && SOURCES=$(echo $2 | sed "s/,/ /g")
+check
+
+[ ! -x $ATOUM ] && echo "Cannot run $ATOUM" && exit 1
 
 [[ -p $PIPE ]] && rm $PIPE; mkfifo $PIPE
 
@@ -45,4 +72,4 @@ do
 	then  
 		echo			
 	fi
-done | bin/atoum --test-all --loop
+done | $ATOUM $TESTS --loop
