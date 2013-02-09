@@ -74,10 +74,16 @@ kicktrap() { kill %%; }
 trap kicktrap INT
 kicker -l 0 -s -e "echo > $PIPE" $SOURCES > /dev/null 2>&1 &
 
+LOOP=false
 while true 
 do 
 	if read line < $PIPE
 	then  
-		echo			
+		if $LOOP
+		then
+			echo			
+		else
+			LOOP=true
+		fi
 	fi
 done | $ATOUM $TESTS --loop
