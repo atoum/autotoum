@@ -81,7 +81,7 @@
 <p>Now you only have to start autotoum in a detached process:</p>
 
 <div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd</span> /path/to/project
-<span class="nv">$ </span>autotoum bin/atoum tests/units,src &gt; /dev/null 2&gt;&amp;1 &amp;
+<span class="nv">$ </span>autotoum -q bin/atoum tests/units,src &amp;
 
 <span class="c"># Kill the loop</span>
 <span class="nv">$ </span><span class="nb">fg</span>
