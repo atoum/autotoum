@@ -3,7 +3,7 @@
 PIPE=/tmp/autotoum_$$
 ATOUM=bin/atoum
 SOURCES="$(pwd)/src $(pwd)/tests/units"
-TESTS="--test-all"
+QUIET=false
 
 check() {
 	if [ ! $(which kicker) ]
@@ -14,7 +14,9 @@ check() {
 }
 
 usage() {
-	echo -ne " Usage : $(basename $0) [-b path/to/atoum] [-w path/to/sources] [-t path/to/tests/units]"
+	echo -ne " Usage : $(basename $0) [-h] [-q] [-b path/to/atoum] [-w path/to/sources] [-t path/to/tests/units]"
+	echo -e "     -h : Display this message"
+	echo -e "     -q : Quiet mode (no output)"
 	echo
 	echo -e "     Path to atoum : path to atoum executable (defaults to $ATOUM)"
 	echo -e "     Path to sources : the watched files and/or directories (defaults to $SOURCES)"
@@ -27,13 +29,22 @@ usage() {
 
 	check
 }
- 
-while getopts “hb:w:” OPTION
+
+atoum() {
+    $ATOUM $* --loop
+}
+
+while getopts “hqb:w:” OPTION
 do
     case $OPTION in
         h)
             usage
             exit 0
+            ;;
+        q)
+            atoum() {
+                $ATOUM $* --loop > /dev/null 2>&1
+            }
             ;;
         b)
             ATOUM=$OPTARG
@@ -84,4 +95,4 @@ do
 			LOOP=true
 		fi
 	fi
-done | $ATOUM $TESTS $* --loop
+done | atoum $*
