@@ -18,10 +18,10 @@ usage() {
 	echo
 	echo -e "     Path to atoum : path to atoum executable (defaults to $ATOUM)"
 	echo -e "     Path to sources : the watched files and/or directories (defaults to $SOURCES)"
-	echo -e "     Path to tests : path to test suite (defaults to $TESTS)"
+	echo -e "     Extra arguments : Extra arguments are forwarded to the atoum executable"
 	echo
 	echo -e "     You can specify several files/directories to watch using a comma (,) separated list :"
-	echo -e "         $ autotoum -w src,tests/units/subset,tests/units/otherSubset -t tests/units"
+	echo -e "         $ autotoum -w src,tests/units/subset,tests/units/otherSubset -- -d tests/units"
 	echo
 	echo -e "     Use CTRL+C to quit"
 
