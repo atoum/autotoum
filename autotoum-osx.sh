@@ -28,7 +28,7 @@ usage() {
 	check
 }
  
-while getopts “hb:w:d:” OPTION
+while getopts “hb:w:” OPTION
 do
     case $OPTION in
         h)
@@ -49,9 +49,6 @@ do
                 fi
             done
             ;;
-        d)
-            TESTS="-d $OPTARG"
-            ;;
         ?)
             usage
             exit 1
@@ -63,7 +60,7 @@ do
     esac
 done
 
-ARGS=$(eval "echo \$${OPTIND}")
+shift $(expr $OPTIND - 1)
 
 check
 
@@ -87,4 +84,4 @@ do
 			LOOP=true
 		fi
 	fi
-done | $ATOUM $TESTS $ARGS --loop
+done | $ATOUM $TESTS $* --loop
