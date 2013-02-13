@@ -33,48 +33,42 @@
 
 <iframe width="940" height="705" src="http://www.youtube.com/embed/Rwp91TwkmsE" frameborder="0" allowfullscreen></iframe>
 
-<h2>Install on Ubuntu</h2>
+<h2>Installation</h2>
 
-<div class="highlight"><pre><span class="nv">$ </span>sudo apt-get install inotify-tools
-<span class="nv">$ </span>sudo wget -O /usr/local/bin/autotoum https://gist.github.com/jubianchi/4731236/raw/autotoum.sh
-<span class="nv">$ </span>sudo chmod +x /usr/local/bin/autotoum
-</pre></div>
-
-<h2>Install on OSX</h2>
-
-<div class="highlight"><pre><span class="nv">$ </span>sudo gem install kicker
+<div class="highlight"><pre><span class="nv">$ </span>gem install kicker
 <span class="nv">$ </span>sudo wget -O /usr/local/bin/autotoum https://gist.github.com/jubianchi/4731236/raw/autotoum-osx.sh
 <span class="nv">$ </span>sudo chmod +x /usr/local/bin/autotoum
 </pre></div>
 
-<p><strong>Note: The OSX version should work on any platform supporting ruby.</strong></p>
-
 <h2>How to use</h2>
 
-<p><strong>To make <code>autotoum</code> work properly, you will have to configure atoum so that it can be used with <a href="http://docs.atoum.org/fr/chapter3.html#test-all"><code>--test-all</code>option</a></strong></p>
-
 <div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd</span> /path/to/project
-<span class="nv">$ </span>autotoum bin/atoum tests/units,src
+<span class="nv">$ </span>autotoum -b bin/atoum -w tests/units,src -- -d tests/unit
 
 <span class="c"># Use CTRL+C to exit loop</span>
 </pre></div>
 
 <h3>Using notifications (experimental)</h3>
 
-<p>I wrote a set of notifiers which you can find in <a href="https://github.com/jubianchi/atoum/tree/notifiers">jubianchi/atoum@notifiers</a>:</p>
+<p>A pull request has been submitted to add support for notifications : <a href="https://github.com/atoum/atoum/pull/170">atoum/atoum#170</a></p>
 
 <div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">php</span>
-<span class="c1">//.atoum.php</span>
+<span class="k">use</span> <span class="nx">mageekguy\atoum</span><span class="p">;</span>
 
-<span class="k">use</span> <span class="nx">\mageekguy\atoum</span><span class="p">;</span>
+<span class="nv">$report</span> <span class="o">=</span> <span class="nv">$script</span><span class="o">-&gt;</span><span class="na">addDefaultReport</span><span class="p">();</span>
 
-<span class="nv">$script</span><span class="o">-&gt;</span><span class="na">addDefaultReport</span><span class="p">()</span>
-    <span class="c1">// Growl notifier : uses growlnotify command</span>
-    <span class="o">-&gt;</span><span class="na">addField</span><span class="p">(</span><span class="k">new</span> <span class="nx">atoum\report\fields\runner\result\notifier\growl</span><span class="p">())</span>
-    <span class="c1">// OS X Notification Center notifier : uses terminal-notifier gem</span>
-    <span class="o">-&gt;</span><span class="na">addField</span><span class="p">(</span><span class="k">new</span> <span class="nx">atoum\report\fields\runner\result\notifier\terminal</span><span class="p">())</span>
-    <span class="c1">// libnotify notifier : uses notify-send from libnotify</span>
-    <span class="o">-&gt;</span><span class="na">addField</span><span class="p">(</span><span class="k">new</span> <span class="nx">atoum\report\fields\runner\result\notifier\libnotify</span><span class="p">())</span>
+<span class="nv">$notifier</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">atoum\report\fields\runner\result\notifier\image\libnotify</span><span class="p">();</span>
+<span class="c">// $notifier = new atoum\report\fields\runner\result\notifier\image\growl();</span>
+<span class="c">// $notifier = new atoum\report\fields\runner\result\notifier\terminal();</span>
+
+<span class="nv">$notifier</span>
+    <span class="o">-&gt;</span><span class="na">setSuccessImage</span><span class="p">(</span>'/path/to/atoum/resources/images/logo/success.png'</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">setFailureImage</span><span class="p">(</span>'/path/to/atoum/resources/images/logo/failure.png'</span><span class="p">)</span>
+<span class="p">;</span>
+
+<span class="nv">$report</span>
+    <span class="o">-&gt;</span><span class="na">addField</span><span class="p">(</span><span class="nv">$notifier</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">addField</span><span class="p">(</span><span class="k">new</span> <span class="nx">atoum\report\fields\runner\atoum\logo</span><span class="p">())</span>
 <span class="p">;</span>
 </pre></div>
 
