@@ -1,53 +1,98 @@
 #!/bin/bash
 
-if [ "-h" = "$1" ]
-then	
-	echo -e " Usage : $0 [\e[0;32m<path/to/atoum>\e[0m] [\e[0;32m<path/to/tests>\e[0m]"
+PIPE=/tmp/autotoum_$$
+ATOUM=bin/atoum
+SOURCES="$(pwd)/src $(pwd)/tests/units"
+QUIET=false
+
+check() {
+	if [ ! $(which kicker) ]
+	then
+		echo -e " kicker is not available. Consider installing kicker's gem"
+		exit 1
+	fi
+}
+
+usage() {
+	echo -ne " Usage : $(basename $0) [-h] [-q] [-b path/to/atoum] [-w path/to/sources] [-t path/to/tests/units]"
+	echo -e "     -h : Display this message"
+	echo -e "     -q : Quiet mode (no output)"
 	echo
-	echo -e "     Path to atoum : defaults to \e[0;32mbin/atoum\e[0m"
-	echo -e "     Path to sources : defaults to \e[0;32msrc,tests/units\e[0m"
+	echo -e "     Path to atoum : path to atoum executable (defaults to $ATOUM)"
+	echo -e "     Path to sources : the watched files and/or directories (defaults to $SOURCES)"
+	echo -e "     Extra arguments : Extra arguments are forwarded to the atoum executable"
 	echo
-	echo -e "     You can specify several files/directories to watch using a \e[0;32mcomma (,) separated list\e[0m :"
-	echo -e "         $ autotoum bin/atoum src,tests/units/subset,tests/units/otherSubset"
+	echo -e "     You can specify several files/directories to watch using a comma (,) separated list :"
+	echo -e "         $ autotoum -w src,tests/units/subset,tests/units/otherSubset -- -d tests/units"
 	echo
 	echo -e "     Use CTRL+C to quit"
-fi
 
-if [ ! $(which inotifywait) ]
-then
-	echo 'inotifywait is not available. Consider installing inotify-tools'
-	exit 1
-fi
+	check
+}
 
-[ "-h" = "$1" ] && exit 0
+atoum() {
+    $ATOUM $* --loop
+}
 
-if [ ! -z "$1" ]
-then	
-	ATOUM=$1
-fi
-
-if [ ! -z "$2" ]
-then		
-	SOURCES=$2
-fi
-
-[ -z "$ATOUM" ] && ATOUM=bin/atoum
-[ -z "$SOURCES" ] && SOURCES="$(pwd)/src,$(pwd)/tests/units"
-
-OIFS=$IFS
-IFS=','
-WATCHLIST="/tmp/autotoum_$$"
-for x in $SOURCES
+while getopts “hqb:w:” OPTION
 do
-    echo $x >> $WATCHLIST
+    case $OPTION in
+        h)
+            usage
+            exit 0
+            ;;
+        q)
+            atoum() {
+                $ATOUM $* --loop > /dev/null 2>&1
+            }
+            ;;
+        b)
+            ATOUM=$OPTARG
+            ;;
+        w)
+            SOURCES=$(echo $OPTARG | sed "s/,/ /g")
+            for entry in $SOURCES
+            do
+                if [ ! -d $entry ] && [ ! -f $entry ]
+                then
+                    echo "Directory/File $entry does not exist"
+                    exit 1
+                fi
+            done
+            ;;
+        ?)
+            usage
+            exit 1
+            ;;
+        *)
+            usage
+            exit 1
+            ;;
+    esac
 done
-IFS=$OIFS
 
-[ ! -x "$ATOUM" ] && echo "File $ATOUM does not exist or is not executable" && exit 1
+shift $(expr $OPTIND - 1)
 
-while inotifywait -re close_write,moved_to,create --fromfile $WATCHLIST > /dev/null 2>&1
+check
+
+[ ! -x $ATOUM ] && echo "Cannot run $ATOUM" && exit 1
+
+[[ -p $PIPE ]] && rm $PIPE; mkfifo $PIPE
+
+kicktrap() { kill %%; }
+trap kicktrap INT
+kicker -l 0 -s -e "echo > $PIPE" $SOURCES > /dev/null 2>&1 &
+
+LOOP=false
+while true 
 do 
-    echo 
-done | $ATOUM --test-all --loop
-
-rm -f $WATCHLIST
+	if read line < $PIPE
+	then  
+		if $LOOP
+		then
+			echo			
+		else
+			LOOP=true
+		fi
+	fi
+done | atoum $*
