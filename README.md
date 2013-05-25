@@ -1,4 +1,4 @@
-![Alt text](http://downloads.atoum.org/images/logo.png) 
+![atoum](http://downloads.atoum.org/images/logo.png)
 
 # autotoum - atoum auto-loop mode
 
