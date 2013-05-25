@@ -41,16 +41,11 @@ atoum() {
 }
 
 watch() {
-    PTH=$1
-    BUFF=$2
-
-    kicktrap() { unwatch $BUFF; }
+    kicktrap() { unwatch $PIPE; }
     trap kicktrap INT
 
-    kicker -l 0 -s -e "echo > $BUFF" $PTH > /dev/null 2>&1 &
+    kicker -l 0 -s -e "echo > $PIPE" $SOURCES > /dev/null 2>&1 &
     echo $! > .autotoum
-
-    shift 2
 
     if [ ! -x $ATOUM ]
     then
@@ -62,7 +57,7 @@ watch() {
     LOOP=false
     while true
     do
-        if read line < $BUFF
+        if read line < $PIPE
         then
             if $LOOP
             then
@@ -75,8 +70,6 @@ watch() {
 }
 
 unwatch() {
-    BUFF=$1
-
     if [ -f .autotoum ]
     then
         while read pid
@@ -91,7 +84,7 @@ unwatch() {
         exit 1
     fi
 
-    [[ -p $BUFF ]] && rm $BUFF
+    [[ -p $PIPE ]] && rm $PIPE
 
     exit 0
 }
@@ -154,10 +147,10 @@ else
 
     if [ $BACKGROUND = true ]
     then
-        watch $SOURCES $PIPE $* &
+        watch $* &
         echo $! > .autotoum
     else
-        watch $SOURCES $PIPE $*
+        watch $*
     fi
 fi
 

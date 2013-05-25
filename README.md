@@ -25,7 +25,7 @@ Usage : autotoum [-h] [-d] [-q] [-b path/to/atoum] [-w path/to/sources] [-- extr
      -d : Background mode (no output)
 
      Path to atoum : path to atoum executable (defaults to bin/atoum)
-     Path to sources : the watched files and/or directories (defaults to /Users/jubianchi/repositories/atoum/autotoum/src /Users/jubianchi/repositories/atoum/autotoum/tests/units)
+     Path to sources : the watched files and/or directories (defaults to src, tests/units)
      Extra arguments : Extra arguments are forwarded to the atoum executable
 
      You can specify several files/directories to watch using a comma (,) separated list:
