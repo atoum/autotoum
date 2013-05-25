@@ -26,12 +26,12 @@ usage() {
 	echo
 	echo -e "     You can specify several files/directories to watch using a comma (,) separated list:"
 	echo -e "         $ autotoum -w src,tests/units/subset,tests/units/otherSubset -- -d tests/units"
+	echo -e "         # Use CTRL+C to quit"
 	echo
 	echo -e "     Background mode:"
 	echo -e "         $ autotoum -d -w src,tests/units/subset,tests/units/otherSubset -- -d tests/units"
 	echo -e "         $ ..."
 	echo -e "         $ autotoum stop"
-	echo -e "     Use CTRL+C to quit"
 
 	check
 }
@@ -92,6 +92,8 @@ unwatch() {
     fi
 
     [[ -p $BUFF ]] && rm $BUFF
+
+    exit 0
 }
 
 while getopts “hqdb:w:” OPTION
