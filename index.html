@@ -35,22 +35,20 @@
 
 <h2>Installation</h2>
 
-<div class="highlight"><pre><span class="nv">$ </span>gem install kicker
-<span class="nv">$ </span>wget -O /usr/local/bin/autotoum https://gist.github.com/jubianchi/4731236/raw/autotoum-osx.sh
-<span class="nv">$ </span>chmod +x /usr/local/bin/autotoum
+<div class="highlight"><pre><span class="nv">$ </span>gem install --version '< 2.6' kicker
+<span class="nv">$ </span>sudo wget -O /usr/local/bin/autotoum https://raw.github.com/jubianchi/autotoum/master/autotoum
+<span class="nv">$ </span>sudo chmod +x /usr/local/bin/autotoum
 </pre></div>
 
 <h2>How to use</h2>
 
 <div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd</span> /path/to/project
-<span class="nv">$ </span>autotoum -b bin/atoum -w tests/units,src -- -d tests/unit
+<span class="nv">$ </span>autotoum -b bin/atoum -w tests/units,src -- -d tests/units
 
 <span class="c"># Use CTRL+C to exit loop</span>
 </pre></div>
 
 <h3>Using notifications (experimental)</h3>
-
-<p>A pull request has been submitted to add support for notifications : <a href="https://github.com/atoum/atoum/pull/170">atoum/atoum#170</a></p>
 
 <div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">php</span>
 <span class="k">use</span> <span class="nx">mageekguy\atoum</span><span class="p">;</span>
@@ -75,11 +73,10 @@
 <p>Now you only have to start autotoum in a detached process:</p>
 
 <div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd</span> /path/to/project
-<span class="nv">$ </span>autotoum -q bin/atoum tests/units,src &amp;
+<span class="nv">$ </span>autotoum -d -b bin/atoum -w tests/units,src -- -d tests/units
 
-<span class="c"># Kill the loop</span>
-<span class="nv">$ </span><span class="nb">fg</span>
-<span class="nv">$ </span>^C
+<span class="c"># Kill autotoum</span>
+<span class="nv">$ </span>autotoum stop
 </pre></div>
         </section>        
       </div>
