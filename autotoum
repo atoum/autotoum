@@ -3,28 +3,34 @@
 PIPE=/tmp/autotoum_$$
 ATOUM=bin/atoum
 SOURCES="$(pwd)/src $(pwd)/tests/units"
-QUIET=false
+BACKGROUND=false
 
 check() {
 	if [ ! $(which kicker) ]
 	then
 		echo -e " kicker is not available. Consider installing kicker's gem"
+
 		exit 1
 	fi
 }
 
 usage() {
-	echo -ne " Usage : $(basename $0) [-h] [-q] [-b path/to/atoum] [-w path/to/sources] [-t path/to/tests/units]"
+	echo -ne " Usage : $(basename $0) [-h] [-d] [-q] [-b path/to/atoum] [-w path/to/sources] [-t path/to/tests/units]"
 	echo -e "     -h : Display this message"
 	echo -e "     -q : Quiet mode (no output)"
+	echo -e "     -d : Background mode (no output)"
 	echo
 	echo -e "     Path to atoum : path to atoum executable (defaults to $ATOUM)"
 	echo -e "     Path to sources : the watched files and/or directories (defaults to $SOURCES)"
 	echo -e "     Extra arguments : Extra arguments are forwarded to the atoum executable"
 	echo
-	echo -e "     You can specify several files/directories to watch using a comma (,) separated list :"
+	echo -e "     You can specify several files/directories to watch using a comma (,) separated list:"
 	echo -e "         $ autotoum -w src,tests/units/subset,tests/units/otherSubset -- -d tests/units"
 	echo
+	echo -e "     Background mode:"
+	echo -e "         $ autotoum -d -w src,tests/units/subset,tests/units/otherSubset -- -d tests/units"
+	echo -e "         $ ..."
+	echo -e "         $ autotoum stop"
 	echo -e "     Use CTRL+C to quit"
 
 	check
@@ -34,17 +40,73 @@ atoum() {
     $ATOUM $* --loop
 }
 
-while getopts “hqb:w:” OPTION
+watch() {
+    PTH=$1
+    BUFF=$2
+
+    kicktrap() { unwatch $BUFF; }
+    trap kicktrap INT
+
+    kicker -l 0 -s -e "echo > $BUFF" $PTH > /dev/null 2>&1 &
+    echo $! > .autotoum
+
+    shift 2
+
+    if [ ! -x $ATOUM ]
+    then
+        echo "Cannot run $ATOUM"
+
+        exit 1
+    fi
+
+    LOOP=false
+    while true
+    do
+        if read line < $BUFF
+        then
+            if $LOOP
+            then
+                echo
+            else
+                LOOP=true
+            fi
+        fi
+    done | atoum $*
+}
+
+unwatch() {
+    BUFF=$1
+
+    if [ -f .autotoum ]
+    then
+        while read pid
+        do
+            kill -9 $pid > /dev/null 2>&1
+        done < .autotoum
+
+        rm ./.autotoum
+    else
+        echo -e "autotoum is not running"
+
+        exit 1
+    fi
+
+    [[ -p $BUFF ]] && rm $BUFF
+}
+
+while getopts “hqdb:w:” OPTION
 do
     case $OPTION in
         h)
             usage
             exit 0
             ;;
-        q)
+        q | d)
             atoum() {
                 $ATOUM $* --loop > /dev/null 2>&1
             }
+
+            [ "$OPTION" = "d" ] && BACKGROUND=true
             ;;
         b)
             ATOUM=$OPTARG
@@ -71,28 +133,30 @@ do
     esac
 done
 
-shift $(expr $OPTIND - 1)
+if [ "$1" = "stop" ]
+then
+    unwatch $PIPE
+else
+    if [ -f .autotoum ]
+    then
+        echo -e "autotoum is already running here"
 
-check
+        exit 1
+    fi
 
-[ ! -x $ATOUM ] && echo "Cannot run $ATOUM" && exit 1
+    shift $(expr $OPTIND - 1)
 
-[[ -p $PIPE ]] && rm $PIPE; mkfifo $PIPE
+    check
 
-kicktrap() { kill %%; }
-trap kicktrap INT
-kicker -l 0 -s -e "echo > $PIPE" $SOURCES > /dev/null 2>&1 &
+    [[ -p $PIPE ]] && rm $PIPE; mkfifo $PIPE
 
-LOOP=false
-while true 
-do 
-	if read line < $PIPE
-	then  
-		if $LOOP
-		then
-			echo			
-		else
-			LOOP=true
-		fi
-	fi
-done | atoum $*
+    if [ $BACKGROUND = true ]
+    then
+        watch $SOURCES $PIPE $* &
+        echo $! > .autotoum
+    else
+        watch $SOURCES $PIPE $*
+    fi
+fi
+
+
