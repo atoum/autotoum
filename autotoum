@@ -15,7 +15,7 @@ check() {
 }
 
 usage() {
-	echo -ne " Usage : $(basename $0) [-h] [-d] [-q] [-b path/to/atoum] [-w path/to/sources] [-t path/to/tests/units]"
+	echo -e " Usage : $(basename $0) [-h] [-d] [-q] [-b path/to/atoum] [-w path/to/sources] [-- extra-args]"
 	echo -e "     -h : Display this message"
 	echo -e "     -q : Quiet mode (no output)"
 	echo -e "     -d : Background mode (no output)"

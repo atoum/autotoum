@@ -19,7 +19,8 @@ $ sudo chmod +x /usr/local/bin/autotoum
 ## How to use
 
 ```
-Usage : autotoum [-h] [-d] [-q] [-b path/to/atoum] [-w path/to/sources] [-t path/to/tests/units]     -h : Display this message
+Usage : autotoum [-h] [-d] [-q] [-b path/to/atoum] [-w path/to/sources] [-- extra-args]
+     -h : Display this message
      -q : Quiet mode (no output)
      -d : Background mode (no output)
 
@@ -35,4 +36,4 @@ Usage : autotoum [-h] [-d] [-q] [-b path/to/atoum] [-w path/to/sources] [-t path
          $ autotoum -d -w src,tests/units/subset,tests/units/otherSubset -- -d tests/units
          $ ...
          $ autotoum stop
-```
+ ```
