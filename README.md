@@ -8,17 +8,39 @@
 
 **Read the documentation at [http://jubianchi.fr/autotoum/](http://jubianchi.fr/autotoum/)**
 
-## How to install
+## Install autotoum
 
-```sh
-$ gem install --version '< 2.6' kicker
-$ sudo wget -O /usr/local/bin/autotoum https://raw.github.com/jubianchi/autotoum/master/autotoum
-$ sudo chmod +x /usr/local/bin/autotoum
+```shell
+$ curl https://raw.github.com/jubianchi/autotoum/master/installer | php
+$ ./autotoum -h
+
+# Enjoy TDD !
+```
+
+### Installer Usage
+
+```shell
+$ ./installer --usage
+$ curl https://raw.github.com/jubianchi/autotoum/master/installer | php -- --usage
+> autotoum installer
+> atoum auto-loop mode
+--global        : Install autotoum as a global command
+--check         : Only run system requirements check
+
+Environment :
+AUTOTOUM_GIT_URL : Git repository (default : https://raw.github.com/jubianchi/autotoum/master/autotoum)
+AUTOTOUM_PATH   : Installation directory (implies --global, default : /usr/share)
+AUTOTOUM_SYMLINK : autotoum bin symlink path (implies --global, default: /usr/local/bin)
+
+Examples :
+$ curl https://raw.github.com/jubianchi/autotoum/master/installer | sudo php -- --global
+$ curl https://raw.github.com/jubianchi/autotoum/master/installer | AUTOTOUM_PATH=/home/me php
 ```
 
 ## How to use
 
 ```
+$ autotoum -h
 Usage : autotoum [-h] [-d] [-q] [-b path/to/atoum] [-w path/to/sources] [-- extra-args]
      -h : Display this message
      -q : Quiet mode (no output)
