@@ -2,16 +2,14 @@
 
 # autotoum - atoum auto-loop mode
 
-**Feedbacks are appreciated :)**
-
 **Check out the [screencast of autotoum](http://youtu.be/Rwp91TwkmsE)**
 
-**Read the documentation at [http://jubianchi.fr/autotoum/](http://jubianchi.fr/autotoum/)**
+**Read the documentation at [http://atoum.github.io/autotoum](http://atoum.github.io/autotoum)**
 
 ## Install autotoum
 
 ```shell
-$ curl https://raw.github.com/jubianchi/autotoum/master/installer | php
+$ curl https://raw.github.com/atoum/autotoum/master/installer | php
 $ ./autotoum -h
 
 # Enjoy TDD !
@@ -21,20 +19,20 @@ $ ./autotoum -h
 
 ```shell
 $ ./installer --usage
-$ curl https://raw.github.com/jubianchi/autotoum/master/installer | php -- --usage
+$ curl https://raw.github.com/atoum/autotoum/master/installer | php -- --usage
 > autotoum installer
 > atoum auto-loop mode
 --global        : Install autotoum as a global command
 --check         : Only run system requirements check
 
 Environment :
-AUTOTOUM_GIT_URL : Git repository (default : https://raw.github.com/jubianchi/autotoum/master/autotoum)
+AUTOTOUM_GIT_URL : Git repository (default : https://raw.github.com/atoum/autotoum/master/autotoum)
 AUTOTOUM_PATH   : Installation directory (implies --global, default : /usr/share)
 AUTOTOUM_SYMLINK : autotoum bin symlink path (implies --global, default: /usr/local/bin)
 
 Examples :
-$ curl https://raw.github.com/jubianchi/autotoum/master/installer | sudo php -- --global
-$ curl https://raw.github.com/jubianchi/autotoum/master/installer | AUTOTOUM_PATH=/home/me php
+$ curl https://raw.github.com/atoum/autotoum/master/installer | sudo php -- --global
+$ curl https://raw.github.com/atoum/autotoum/master/installer | AUTOTOUM_PATH=/home/me php
 ```
 
 ## How to use
