@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
-define('INSTALLER_URL',            'https://raw.github.com/jubianchi/autotoum/master/installer');
-define('AUTOTOUM_GIT_URL_DEFAULT', 'https://raw.github.com/jubianchi/autotoum/master/autotoum');
+define('INSTALLER_URL',            'https://raw.github.com/atoum/autotoum/master/installer');
+define('AUTOTOUM_GIT_URL_DEFAULT', 'https://raw.github.com/atoum/autotoum/master/autotoum');
 define('AUTOTOUM_GIT_URL',         (($url = getenv('AUTOTOUM_GIT_URL')) ? $url : AUTOTOUM_GIT_URL_DEFAULT));
 
 define('AUTOTOUM_PATH_DEFAULT',    '/usr/share');
