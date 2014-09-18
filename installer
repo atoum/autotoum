@@ -118,6 +118,7 @@ function install(array $args) {
         if(true === checkLinkExists(AUTOTOUM_SYMLINK)) {
             unlink(AUTOTOUM_SYMLINK);
         }
+
         ppassthru('ln -s ' . AUTOTOUM_PATH . DIRECTORY_SEPARATOR .'autotoum ' . AUTOTOUM_SYMLINK);
         ppassthru(sprintf('chmod +x %s', AUTOTOUM_SYMLINK));
 
@@ -140,18 +141,19 @@ function checkRequirements(array $args) {
     } else {
         exec('ruby -v', $output);
 
-        printfln('>>> <green>Actual Ruby version is %s', $output[0]);
+        printfln('>>> Actual Ruby version is <green>%s', $output[0]);
     }
 
     if(ppassthru('which kicker') !== 0) {
         printfln('>>> <red>Kicker is not installed');
         printfln('>>> <red>Please run: gem install --version=\'< 2.6\' kicker');
+        printfln('>>> <red>Or if you install from source repository: bundle install');
         $error = true;
     } else {
         $output = null;
         exec('kicker -v', $output);
 
-        printfln('>>> <green>Actual Kicker version is %s', $output[0]);
+        printfln('>>> Actual Kicker version is <green>%s', $output[0]);
     }
 
     if(false === checkPermissions($args)) {

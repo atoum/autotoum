@@ -1,0 +1,12 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    kicker (2.5.0)
+      rb-fsevent
+    rb-fsevent (0.9.4)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  kicker (< 2.6)
