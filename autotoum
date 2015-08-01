@@ -37,7 +37,7 @@ usage() {
 }
 
 atoum() {
-    $ATOUM $* --loop
+    bash $AUTOTOUM_SCRIPT
 }
 
 watch() {
@@ -98,7 +98,7 @@ do
             ;;
         q | d)
             atoum() {
-                $ATOUM $* --loop > /dev/null 2>&1
+                bash $AUTOTOUM_SCRIPT > /dev/null 2>&1
             }
 
             [ "$OPTION" = "d" ] && BACKGROUND=true
@@ -142,6 +142,9 @@ else
     shift $(expr $OPTIND - 1)
 
     check
+
+    AUTOTOUM_SCRIPT=$(mktemp -t autotoum)
+    echo $ATOUM $@ --loop > $AUTOTOUM_SCRIPT
 
     [[ -p $PIPE ]] && rm $PIPE; mkfifo $PIPE
 
