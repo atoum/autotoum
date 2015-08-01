@@ -41,7 +41,11 @@ atoum() {
 }
 
 watch() {
-    kicktrap() { unwatch $PIPE; }
+    kicktrap() {
+        stty echo;
+        unwatch $PIPE;
+    }
+
     trap kicktrap INT
 
     kicker -l 0 -s -e "echo > $PIPE" $SOURCES > /dev/null 2>&1 &
@@ -57,7 +61,7 @@ watch() {
     LOOP=false
     while true
     do
-        if read line < $PIPE
+        if read line > /dev/null 2>&1 < $PIPE
         then
             if $LOOP
             then
@@ -148,6 +152,8 @@ else
 
     [[ -p $PIPE ]] && rm $PIPE; mkfifo $PIPE
 
+    stty -echo
+
     if [ $BACKGROUND = true ]
     then
         watch $* &
@@ -155,6 +161,8 @@ else
     else
         watch $*
     fi
+
+    stty echo
 fi
 
 
